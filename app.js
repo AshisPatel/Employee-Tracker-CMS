@@ -1,7 +1,9 @@
 const Department = require('./lib/Department');
+const Database = require('./lib/Database');
 const Roles = require('./lib/Roles');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
+const db = new Database;
 
 
 const start = function () {
@@ -14,11 +16,11 @@ const start = function () {
                 choices: ['View all departments', 'View all roles', 'Modify departments', 'Modify roles', 'Quit']
             }
         ])
-        .then(data => {
+        .then(async (data) => {
             const action = data.action;
             if (action === 'View all departments') {
-                const department = new Department;
-                return department.getDepartments();
+                const departmentTable = await db.getDepartments();
+                console.table(departmentTable);
             }
             if (action === 'View all roles') {
                 const role = new Roles;
@@ -36,11 +38,11 @@ const start = function () {
             if (action === 'Quit') {
                 return;
             }
-
+            return start();
         })
 };
 
-const departmentPrompts = function () {
+const departmentPrompts = async function () {
     console.log('Taking you to the department options...');
     return inquirer.prompt([
         {
@@ -67,17 +69,16 @@ const departmentPrompts = function () {
                 return start();
             }
 
-            const department = new Department;
             if (data.name) {
-                return departments.addDepartment(data.name);
+                db.addDepartment(data.name);
             }
-
-        })
-}
-
-const rolePrompts = function () {
+            return start();
+        });
+};
+const rolePrompts = async function () {
     console.log('Taking you to the role prompts...')
     const department = new Department;
+    const options = await print().then(rowsArray => { return rowsArray });
     return inquirer.prompt([
         {
             type: 'list',
@@ -89,11 +90,11 @@ const rolePrompts = function () {
             type: 'input',
             name: 'title',
             message: 'Enter new role title: ',
-            when: ({action}) => {
-                if(action === 'Add a new role') {
-                    return true; 
+            when: ({ action }) => {
+                if (action === 'Add a new role') {
+                    return true;
                 } else {
-                    return false; 
+                    return false;
                 }
             }
         },
@@ -101,11 +102,11 @@ const rolePrompts = function () {
             type: 'input',
             name: 'salary',
             message: 'Enter new role salary: ',
-            when: ({action}) => {
-                if(action === 'Add a new role') {
-                    return true; 
+            when: ({ action }) => {
+                if (action === 'Add a new role') {
+                    return true;
                 } else {
-                    return false; 
+                    return false;
                 }
             }
         },
@@ -113,12 +114,12 @@ const rolePrompts = function () {
             type: 'list',
             name: 'department',
             message: 'Choose the department of the new role: ',
-            choices: [department.getDepartmentNames()],
-            when: ({action}) => {
-                if(action === 'Add a new role') {
-                    return true; 
+            choices: options,
+            when: ({ action }) => {
+                if (action === 'Add a new role') {
+                    return true;
                 } else {
-                    return false; 
+                    return false;
                 }
             }
         }
@@ -135,15 +136,33 @@ const rolePrompts = function () {
         })
 }
 
-//start();
+start();
 
-const test = new Department;
 
-function print(result) {
-    console.log(result); 
-}
+// const print = () => {
+//     return new Promise((resolve, reject) => {
+//         const mysql = require('mysql2');
+//         // Create connection
+//         const connection = mysql.createConnection({ host: 'localhost', user: 'root', password: 'password', database: 'company'});
+//         const sql = `SELECT departments.name FROM departments`;
 
-print(test.getDepartmentNames());
+//         connection.query(sql, (err, rows) => {
+//            if (err) {
+//                console.log(err.message); 
+//                return;
+//            } 
+//            const rowsArray = rows.map(obj => obj.name);
+//            resolve(rowsArray); 
+//         });
+//     });
+// }
+
+
+// So I need to create a function I can call to generate lists given a resolved response... 
+
+
+
+
 
 
 
