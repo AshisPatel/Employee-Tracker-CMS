@@ -1,6 +1,4 @@
-const Department = require('./lib/Department');
 const Database = require('./lib/Database');
-const Roles = require('./lib/Roles');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
 const db = new Database;
@@ -77,8 +75,7 @@ const departmentPrompts = async function () {
 };
 const rolePrompts = async function () {
     console.log('Taking you to the role prompts...')
-    const department = new Department;
-    const options = await print().then(rowsArray => { return rowsArray });
+    const departmentChoices = await db.getDepartmentNames();
     return inquirer.prompt([
         {
             type: 'list',
@@ -114,7 +111,7 @@ const rolePrompts = async function () {
             type: 'list',
             name: 'department',
             message: 'Choose the department of the new role: ',
-            choices: options,
+            choices: departmentChoices,
             when: ({ action }) => {
                 if (action === 'Add a new role') {
                     return true;
@@ -129,9 +126,9 @@ const rolePrompts = async function () {
                 return start();
             }
 
-            const roles = new Roles;
             if (data.action === 'Add a new role') {
-                return roles.addDepartment(data.title, data.salary, data.department)
+                // Actually add this function in 
+                return db.addRole(data.title, data.salary, data.department)
             }
         })
 }
@@ -139,23 +136,10 @@ const rolePrompts = async function () {
 start();
 
 
-// const print = () => {
-//     return new Promise((resolve, reject) => {
-//         const mysql = require('mysql2');
-//         // Create connection
-//         const connection = mysql.createConnection({ host: 'localhost', user: 'root', password: 'password', database: 'company'});
-//         const sql = `SELECT departments.name FROM departments`;
 
-//         connection.query(sql, (err, rows) => {
-//            if (err) {
-//                console.log(err.message); 
-//                return;
-//            } 
-//            const rowsArray = rows.map(obj => obj.name);
-//            resolve(rowsArray); 
-//         });
-//     });
-// }
+
+
+
 
 
 // So I need to create a function I can call to generate lists given a resolved response... 
