@@ -23,8 +23,8 @@ const start = function () {
                 console.table(departmentTable);
             }
             if (action === 'View all roles') {
-                const role = new Roles;
-                return role.getRoles();
+                const rolesTable = await db.getRoles();
+                console.table(rolesTable);
             }
 
             if (action === 'Modify departments') {
