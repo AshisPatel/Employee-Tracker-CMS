@@ -4,14 +4,27 @@ const cTable = require('console.table');
 const db = new Database;
 
 
-const start = function () {
+const start = async function () {
+    const managerChoices = await db.getEmployeeNames();
     return inquirer
         .prompt([
             {
                 type: 'list',
                 name: 'action',
                 message: 'What would you like to do?',
-                choices: ['View all departments', 'View all roles', 'View all employees', 'Modify departments', 'Modify roles','Modify employees', 'Quit']
+                choices: ['View all departments', 'View all roles', 'View all employees', 'View employees by manager', 'Modify departments', 'Modify roles', 'Modify employees', 'Quit']
+            },
+            {
+                type: 'list',
+                name: 'manager',
+                message: 'Select the manager that you would like to see the employees of: ',
+                choices: managerChoices,
+                when: ({ action }) => {
+                    if (action === 'View employees by manager') {
+                        return true;
+                    } else
+                        return false;
+                }
             }
         ])
         .then(async (data) => {
@@ -26,6 +39,13 @@ const start = function () {
             }
             if (action === 'View all employees') {
                 const employeesTable = await db.getEmployees();
+                console.table(employeesTable);
+            }
+            if (action === 'View employees by manager') {
+                const employeesTable = await db.getEmployeesByManager(data.manager);
+                console.log(`
+                You are viewing the employees under ${data.manager} 
+                `);
                 console.table(employeesTable);
             }
             if (action === 'Modify departments') {
@@ -60,11 +80,11 @@ const departmentPrompts = function () {
             name: 'name',
             message: 'Enter the new department name:',
             validate: nameInput => {
-                if(nameInput) {
+                if (nameInput) {
                     return true;
                 } else {
                     console.log('Please enter in the name of the new department');
-                    return false; 
+                    return false;
                 }
             },
             when: ({ action }) => {
@@ -102,11 +122,11 @@ const rolePrompts = async function () {
             name: 'title',
             message: 'Enter new role title: ',
             validate: titleInput => {
-                if(titleInput) {
+                if (titleInput) {
                     return true;
                 } else {
                     console.log('Please enter the new role title!');
-                    return false; 
+                    return false;
                 }
             },
             when: ({ action }) => {
@@ -122,17 +142,17 @@ const rolePrompts = async function () {
             name: 'salary',
             message: 'Enter new role salary: ',
             validate: salaryInput => {
-                if(isNaN(salaryInput) || !salaryInput) {
+                if (isNaN(salaryInput) || !salaryInput) {
                     return "This input is meant to be number! (Start typing to dismiss this message)";
                 } else {
-                    return true; 
+                    return true;
                 }
             },
             filter: salaryInput => {
                 if (isNaN(salaryInput)) {
                     return "";
                 } else {
-                    return salaryInput; 
+                    return salaryInput;
                 }
             },
             when: ({ action }) => {
@@ -169,7 +189,7 @@ const rolePrompts = async function () {
         })
 }
 
-const employeePrompts = async function() {
+const employeePrompts = async function () {
     console.log('Taking you to the employee options...');
     const roleChoices = await db.getRoleTitles();
     const managerChoices = await db.getEmployeeNames();
@@ -187,11 +207,11 @@ const employeePrompts = async function() {
             name: 'firstName',
             message: "Enter the new employee's first name: ",
             validate: firstNameInput => {
-                if(firstNameInput) {
-                    return true; 
+                if (firstNameInput) {
+                    return true;
                 } else {
                     console.log("Please enter the new employee's first name!");
-                    return false; 
+                    return false;
                 }
             },
             when: ({ action }) => {
@@ -207,11 +227,11 @@ const employeePrompts = async function() {
             name: 'lastName',
             message: "Enter the new employee's last name: ",
             validate: lastNameInput => {
-                if(lastNameInput) {
-                    return true; 
+                if (lastNameInput) {
+                    return true;
                 } else {
                     console.log("Please enter the new employee's last name!");
-                    return false; 
+                    return false;
                 }
             },
             when: ({ action }) => {
@@ -227,11 +247,11 @@ const employeePrompts = async function() {
             name: 'role',
             message: "Select the new employee's role: ",
             choices: roleChoices,
-            when: ({action}) => {
-                if(action === 'Add a new employee') {
+            when: ({ action }) => {
+                if (action === 'Add a new employee') {
                     return true;
                 } else {
-                    return false; 
+                    return false;
                 }
             }
         },
@@ -240,11 +260,11 @@ const employeePrompts = async function() {
             name: 'manager',
             message: "Select the new employee's manager: ",
             choices: managerChoices,
-            when: ({action}) => {
-                if(action === 'Add a new employee') {
+            when: ({ action }) => {
+                if (action === 'Add a new employee') {
                     return true;
                 } else {
-                    return false; 
+                    return false;
                 }
             }
         },
@@ -253,11 +273,11 @@ const employeePrompts = async function() {
             name: 'employee',
             message: "Select the employee whose information will be changed: ",
             choices: employeeChoices,
-            when: ({action}) => {
-                if(action === "Change an employee's role" || action === "Change an employee's manager") {
-                    return true; 
+            when: ({ action }) => {
+                if (action === "Change an employee's role" || action === "Change an employee's manager") {
+                    return true;
                 } else {
-                    return false; 
+                    return false;
                 }
             }
 
@@ -267,11 +287,11 @@ const employeePrompts = async function() {
             name: 'newRole',
             message: "Select the employee's new role: ",
             choices: roleChoices,
-            when: ({action}) => {
-                if(action === "Change an employee's role" ) {
+            when: ({ action }) => {
+                if (action === "Change an employee's role") {
                     return true;
                 } else {
-                    return false; 
+                    return false;
                 }
             }
         },
@@ -280,33 +300,33 @@ const employeePrompts = async function() {
             name: 'newManager',
             message: "Select the employee's new manager: ",
             choices: managerChoices,
-            when: ({action}) => {
-                if(action === "Change an employee's manager") {
+            when: ({ action }) => {
+                if (action === "Change an employee's manager") {
                     return true;
                 } else {
-                    return false; 
+                    return false;
                 }
             }
         }
     ])
-    .then(data => {
-        if (data.action === 'Go back') {
+        .then(data => {
+            if (data.action === 'Go back') {
+                return start();
+            }
+
+            if (data.action === 'Add a new employee') {
+                db.addEmployee(data.firstName, data.lastName, data.role, data.manager);
+            }
+
+            if (data.action === "Change an employee's role") {
+                db.updateEmployeeRole(data.employee, data.newRole);
+            }
+
+            if (data.action === "Change an employee's manager") {
+                db.updateEmployeeManager(data.employee, data.newManager);
+            }
             return start();
-        }
-
-        if(data.action === 'Add a new employee') {
-            db.addEmployee(data.firstName, data.lastName, data.role, data.manager);
-        }
-
-        if(data.action === "Change an employee's role") {
-            db.updateEmployeeRole(data.employee, data.newRole);
-        }
-
-        if(data.action === "Change an employee's manager") {
-            db.updateEmployeeManager(data.employee, data.newManager); 
-        }
-        return start();
-    });
+        });
 
 }
 
