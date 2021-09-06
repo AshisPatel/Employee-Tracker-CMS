@@ -142,14 +142,15 @@ const rolePrompts = async function () {
 const employeePrompts = async function() {
     console.log('Taking you to the employee options...');
     const roleChoices = await db.getRoleTitles();
-    const managerChoices = await db.getManagers();
+    const managerChoices = await db.getEmployeeNames();
     managerChoices.push('None');
+    const employeeChoices = await db.getEmployeeNames();
     return inquirer.prompt([
         {
             type: 'list',
             name: 'action',
             message: 'What would you like to do?',
-            choices: ['Add a new employee', 'Go back']
+            choices: ['Add a new employee', "Change an employee's role", 'Go back']
         },
         {
             type: 'input',
@@ -200,6 +201,33 @@ const employeePrompts = async function() {
                     return false; 
                 }
             }
+        },
+        {
+            type: 'list',
+            name: 'employee',
+            message: "Select the employee whose role will be changed: ",
+            choices: employeeChoices,
+            when: ({action}) => {
+                if(action === "Change an employee's role") {
+                    return true; 
+                } else {
+                    return false; 
+                }
+            }
+
+        },
+        {
+            type: 'list',
+            name: 'newRole',
+            message: "Select the employee's new role: ",
+            choices: roleChoices,
+            when: ({action}) => {
+                if(action === "Change an employee's role" ) {
+                    return true;
+                } else {
+                    return false; 
+                }
+            }
         }
     ])
     .then(data => {
@@ -209,6 +237,10 @@ const employeePrompts = async function() {
 
         if(data.action === 'Add a new employee') {
             db.addEmployee(data.firstName, data.lastName, data.role, data.manager);
+        }
+
+        if(data.action === "Change an employee's role") {
+            db.updateEmployeeRole(data.employee, data.newRole);
         }
         return start();
     });
