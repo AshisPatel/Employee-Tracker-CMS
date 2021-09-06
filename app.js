@@ -180,7 +180,7 @@ const employeePrompts = async function() {
             type: 'list',
             name: 'action',
             message: 'What would you like to do?',
-            choices: ['Add a new employee', "Change an employee's role", 'Go back']
+            choices: ['Add a new employee', "Change an employee's role", "Change an employee's manager", 'Go back']
         },
         {
             type: 'input',
@@ -251,10 +251,10 @@ const employeePrompts = async function() {
         {
             type: 'list',
             name: 'employee',
-            message: "Select the employee whose role will be changed: ",
+            message: "Select the employee whose information will be changed: ",
             choices: employeeChoices,
             when: ({action}) => {
-                if(action === "Change an employee's role") {
+                if(action === "Change an employee's role" || action === "Change an employee's manager") {
                     return true; 
                 } else {
                     return false; 
@@ -274,6 +274,19 @@ const employeePrompts = async function() {
                     return false; 
                 }
             }
+        },
+        {
+            type: 'list',
+            name: 'newManager',
+            message: "Select the employee's new manager: ",
+            choices: managerChoices,
+            when: ({action}) => {
+                if(action === "Change an employee's manager") {
+                    return true;
+                } else {
+                    return false; 
+                }
+            }
         }
     ])
     .then(data => {
@@ -287,6 +300,10 @@ const employeePrompts = async function() {
 
         if(data.action === "Change an employee's role") {
             db.updateEmployeeRole(data.employee, data.newRole);
+        }
+
+        if(data.action === "Change an employee's manager") {
+            db.updateEmployeeManager(data.employee, data.newManager); 
         }
         return start();
     });
