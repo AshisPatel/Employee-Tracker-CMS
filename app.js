@@ -59,6 +59,14 @@ const departmentPrompts = function () {
             type: 'input',
             name: 'name',
             message: 'Enter the new department name:',
+            validate: nameInput => {
+                if(nameInput) {
+                    return true;
+                } else {
+                    console.log('Please enter in the name of the new department');
+                    return false; 
+                }
+            },
             when: ({ action }) => {
                 if (action === 'Add a new department') {
                     return true;
@@ -93,6 +101,14 @@ const rolePrompts = async function () {
             type: 'input',
             name: 'title',
             message: 'Enter new role title: ',
+            validate: titleInput => {
+                if(titleInput) {
+                    return true;
+                } else {
+                    console.log('Please enter the new role title!');
+                    return false; 
+                }
+            },
             when: ({ action }) => {
                 if (action === 'Add a new role') {
                     return true;
@@ -105,6 +121,20 @@ const rolePrompts = async function () {
             type: 'input',
             name: 'salary',
             message: 'Enter new role salary: ',
+            validate: salaryInput => {
+                if(isNaN(salaryInput) || !salaryInput) {
+                    return "This input is meant to be number! (Start typing to dismiss this message)";
+                } else {
+                    return true; 
+                }
+            },
+            filter: salaryInput => {
+                if (isNaN(salaryInput)) {
+                    return "";
+                } else {
+                    return salaryInput; 
+                }
+            },
             when: ({ action }) => {
                 if (action === 'Add a new role') {
                     return true;
