@@ -186,6 +186,14 @@ const employeePrompts = async function() {
             type: 'input',
             name: 'firstName',
             message: "Enter the new employee's first name: ",
+            validate: firstNameInput => {
+                if(firstNameInput) {
+                    return true; 
+                } else {
+                    console.log("Please enter the new employee's first name!");
+                    return false; 
+                }
+            },
             when: ({ action }) => {
                 if (action === 'Add a new employee') {
                     return true;
@@ -198,6 +206,14 @@ const employeePrompts = async function() {
             type: 'input',
             name: 'lastName',
             message: "Enter the new employee's last name: ",
+            validate: lastNameInput => {
+                if(lastNameInput) {
+                    return true; 
+                } else {
+                    console.log("Please enter the new employee's last name!");
+                    return false; 
+                }
+            },
             when: ({ action }) => {
                 if (action === 'Add a new employee') {
                     return true;
