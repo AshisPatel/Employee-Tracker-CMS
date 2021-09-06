@@ -121,15 +121,15 @@ const rolePrompts = async function () {
             }
         }
     ])
-        .then(data => {
+        .then(async data => {
             if (data.action === 'Go back') {
                 return start();
             }
 
             if (data.action === 'Add a new role') {
-                // Actually add this function in 
-                return db.addRole(data.title, data.salary, data.department)
+                db.addRole(data.title, data.salary, data.department);
             }
+            return start();
         })
 }
 
