@@ -6,13 +6,14 @@ const db = new Database;
 
 const start = async function () {
     const managerChoices = await db.getEmployeeNames();
+    const departmentChoices = await db.getDepartmentNames();
     return inquirer
         .prompt([
             {
                 type: 'list',
                 name: 'action',
                 message: 'What would you like to do?',
-                choices: ['View all departments', 'View all roles', 'View all employees', 'View employees by manager', 'Modify departments', 'Modify roles', 'Modify employees', 'Quit']
+                choices: ['View all departments', 'View all roles', 'View all employees', 'View employees by manager','View employees by department', 'Modify departments', 'Modify roles', 'Modify employees', 'Quit']
             },
             {
                 type: 'list',
@@ -22,8 +23,22 @@ const start = async function () {
                 when: ({ action }) => {
                     if (action === 'View employees by manager') {
                         return true;
-                    } else
+                    } else {
                         return false;
+                    }
+                }
+            },
+            {
+                type: 'list',
+                name: 'department',
+                message: 'Select the department that you would like to see the employees in: ',
+                choices: departmentChoices,
+                when: ({action}) => {
+                    if (action === 'View employees by department') {
+                        return true; 
+                    } else {
+                        return false; 
+                    }
                 }
             }
         ])
@@ -48,6 +63,14 @@ const start = async function () {
                 `);
                 console.table(employeesTable);
             }
+            if (action === 'View employees by department') {
+                const employeesTable = await db.getEmployeesByDepartment(data.department);
+                console.log(`
+                You are viewing the employees in the ${data.department} department
+                `);
+                console.table(employeesTable);
+            }
+
             if (action === 'Modify departments') {
                 return departmentPrompts();
             }
