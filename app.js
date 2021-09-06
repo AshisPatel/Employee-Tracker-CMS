@@ -151,12 +151,13 @@ const departmentPrompts = async function () {
 const rolePrompts = async function () {
     console.log('Taking you to the role prompts...')
     const departmentChoices = await db.getDepartmentNames();
+    const roleChoices = await db.getRoleTitles();
     return inquirer.prompt([
         {
             type: 'list',
             name: 'action',
             message: 'What would you like to do?',
-            choices: ['Add a new role', 'Go back']
+            choices: ['Add a new role', 'Delete a role', 'Go back']
         },
         {
             type: 'input',
@@ -216,15 +217,32 @@ const rolePrompts = async function () {
                     return false;
                 }
             }
+        },
+        {
+            type: 'list',
+            name: 'deletedRole',
+            message: 'Select the role that will be deleted: ',
+            choices: roleChoices,
+            when: ({ action }) => {
+                if (action === 'Delete a role') {
+                    return true; 
+                } else {
+                    return false; 
+                }
+            }
         }
     ])
-        .then(data => {
+        .then(async data => {
             if (data.action === 'Go back') {
                 return start();
             }
 
             if (data.action === 'Add a new role') {
-                db.addRole(data.title, data.salary, data.department);
+                await db.addRole(data.title, data.salary, data.department);
+            }
+
+            if (data.action === 'Delete a role') {
+                await db.delete('roles', data.deletedRole);
             }
             return start();
         })
