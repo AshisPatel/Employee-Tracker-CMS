@@ -13,7 +13,7 @@ const start = async function () {
                 type: 'list',
                 name: 'action',
                 message: 'What would you like to do?',
-                choices: ['View all departments', 'View all roles', 'View all employees', 'View employees by manager','View employees by department', 'Modify departments', 'Modify roles', 'Modify employees', 'Quit']
+                choices: ['View all departments', 'View all roles', 'View all employees', 'View employees by manager', 'View employees by department', 'Modify departments', 'Modify roles', 'Modify employees', 'Quit']
             },
             {
                 type: 'list',
@@ -33,11 +33,11 @@ const start = async function () {
                 name: 'department',
                 message: 'Select the department that you would like to see the employees in: ',
                 choices: departmentChoices,
-                when: ({action}) => {
+                when: ({ action }) => {
                     if (action === 'View employees by department') {
-                        return true; 
+                        return true;
                     } else {
-                        return false; 
+                        return false;
                     }
                 }
             }
@@ -89,14 +89,15 @@ const start = async function () {
         })
 };
 
-const departmentPrompts = function () {
+const departmentPrompts = async function () {
+    const departmentChoices = await db.getDepartmentNames();
     console.log('Taking you to the department options...');
     return inquirer.prompt([
         {
             type: 'list',
             name: 'action',
             message: 'What would you like to do?',
-            choices: ['Add a new department', 'Go back']
+            choices: ['Add a new department', 'Delete a department', 'Go back']
         },
         {
             type: 'input',
@@ -117,15 +118,32 @@ const departmentPrompts = function () {
                     return false;
                 }
             }
+        },
+        {
+            type: 'list',
+            name: 'deletedDepartment',
+            message: 'Select the department that you would like to delete: ',
+            choices: departmentChoices,
+            when: ({action}) => {
+                if (action === 'Delete a department') {
+                    return true; 
+                } else {
+                    return false; 
+                }
+            }
         }
     ])
-        .then(data => {
+        .then(async data => {
             if (data.action === 'Go back') {
                 return start();
             }
 
             if (data.name) {
-                db.addDepartment(data.name);
+                await db.addDepartment(data.name);
+            }
+
+            if (data.deletedDepartment) {
+                await db.delete('departments', data.deletedDepartment);
             }
             return start();
         });
