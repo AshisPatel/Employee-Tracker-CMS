@@ -259,7 +259,7 @@ const employeePrompts = async function () {
             type: 'list',
             name: 'action',
             message: 'What would you like to do?',
-            choices: ['Add a new employee', "Change an employee's role", "Change an employee's manager", 'Go back']
+            choices: ['Add a new employee', 'Delete an employee', "Change an employee's role", "Change an employee's manager", 'Go back']
         },
         {
             type: 'input',
@@ -329,6 +329,19 @@ const employeePrompts = async function () {
         },
         {
             type: 'list',
+            name: 'deletedEmployee',
+            message: 'Select the employee that will be deleted: ',
+            choices: employeeChoices,
+            when: ({ action }) => {
+                if(action === 'Delete an employee') {
+                    return true; 
+                } else {
+                    return false; 
+                }
+            }
+        },
+        {
+            type: 'list',
             name: 'employee',
             message: "Select the employee whose information will be changed: ",
             choices: employeeChoices,
@@ -368,21 +381,25 @@ const employeePrompts = async function () {
             }
         }
     ])
-        .then(data => {
+        .then(async data => {
             if (data.action === 'Go back') {
                 return start();
             }
 
             if (data.action === 'Add a new employee') {
-                db.addEmployee(data.firstName, data.lastName, data.role, data.manager);
+                await db.addEmployee(data.firstName, data.lastName, data.role, data.manager);
+            }
+
+            if(data.action === 'Delete an employee') {
+                await db.delete('employees', data.deletedEmployee); 
             }
 
             if (data.action === "Change an employee's role") {
-                db.updateEmployeeRole(data.employee, data.newRole);
+                await db.updateEmployeeRole(data.employee, data.newRole);
             }
 
             if (data.action === "Change an employee's manager") {
-                db.updateEmployeeManager(data.employee, data.newManager);
+                await db.updateEmployeeManager(data.employee, data.newManager);
             }
             return start();
         });
