@@ -11,7 +11,7 @@ const start = function () {
                 type: 'list',
                 name: 'action',
                 message: 'What would you like to do?',
-                choices: ['View all departments', 'View all roles', 'Modify departments', 'Modify roles', 'Quit']
+                choices: ['View all departments', 'View all roles', 'View all employees', 'Modify departments', 'Modify roles', 'Quit']
             }
         ])
         .then(async (data) => {
@@ -24,7 +24,10 @@ const start = function () {
                 const rolesTable = await db.getRoles();
                 console.table(rolesTable);
             }
-
+            if (action === 'View all employees') {
+                const employeesTable = await db.getEmployees();
+                console.table(employeesTable);
+            }
             if (action === 'Modify departments') {
                 return departmentPrompts();
             }
