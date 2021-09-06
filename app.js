@@ -11,7 +11,7 @@ const start = function () {
                 type: 'list',
                 name: 'action',
                 message: 'What would you like to do?',
-                choices: ['View all departments', 'View all roles', 'View all employees', 'Modify departments', 'Modify roles', 'Quit']
+                choices: ['View all departments', 'View all roles', 'View all employees', 'Modify departments', 'Modify roles','Modify employees', 'Quit']
             }
         ])
         .then(async (data) => {
@@ -35,6 +35,9 @@ const start = function () {
             if (action === 'Modify roles') {
                 return rolePrompts();
             }
+            if (action === 'Modify employees') {
+                return employeePrompts();
+            }
 
             if (action === 'Quit') {
                 return;
@@ -43,7 +46,7 @@ const start = function () {
         })
 };
 
-const departmentPrompts = async function () {
+const departmentPrompts = function () {
     console.log('Taking you to the department options...');
     return inquirer.prompt([
         {
@@ -124,7 +127,7 @@ const rolePrompts = async function () {
             }
         }
     ])
-        .then(async data => {
+        .then(data => {
             if (data.action === 'Go back') {
                 return start();
             }
@@ -134,6 +137,82 @@ const rolePrompts = async function () {
             }
             return start();
         })
+}
+
+const employeePrompts = async function() {
+    console.log('Taking you to the employee options...');
+    const roleChoices = await db.getRoleTitles();
+    const managerChoices = await db.getManagers();
+    managerChoices.push('None');
+    return inquirer.prompt([
+        {
+            type: 'list',
+            name: 'action',
+            message: 'What would you like to do?',
+            choices: ['Add a new employee', 'Go back']
+        },
+        {
+            type: 'input',
+            name: 'firstName',
+            message: "Enter the new employee's first name: ",
+            when: ({ action }) => {
+                if (action === 'Add a new employee') {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        },
+        {
+            type: 'input',
+            name: 'lastName',
+            message: "Enter the new employee's last name: ",
+            when: ({ action }) => {
+                if (action === 'Add a new employee') {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        },
+        {
+            type: 'list',
+            name: 'role',
+            message: "Select the new employee's role: ",
+            choices: roleChoices,
+            when: ({action}) => {
+                if(action === 'Add a new employee') {
+                    return true;
+                } else {
+                    return false; 
+                }
+            }
+        },
+        {
+            type: 'list',
+            name: 'manager',
+            message: "Select the new employee's manager: ",
+            choices: managerChoices,
+            when: ({action}) => {
+                if(action === 'Add a new employee') {
+                    return true;
+                } else {
+                    return false; 
+                }
+            }
+        }
+    ])
+    .then(data => {
+        if (data.action === 'Go back') {
+            return start();
+        }
+
+        if(data.action === 'Add a new employee') {
+            db.addEmployee(data.firstName, data.lastName, data.role, data.manager);
+        }
+        return start();
+    });
+
 }
 
 start();
