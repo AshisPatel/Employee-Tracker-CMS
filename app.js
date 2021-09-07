@@ -13,7 +13,20 @@ const start = async function () {
                 type: 'list',
                 name: 'action',
                 message: 'What would you like to do?',
-                choices: ['View all departments', 'View all roles', 'View all employees', 'View employees by manager', 'View employees by department', 'Modify departments', 'Modify roles', 'Modify employees', 'Quit']
+                choices: ['View all departments', 'View department budget', 'View all roles', 'View all employees', 'View employees by manager', 'View employees by department', 'Modify departments', 'Modify roles', 'Modify employees', 'Quit']
+            },
+            {
+                type: 'list',
+                name: "departmentBudget",
+                message: 'Select which department you would like to see the budget of: ',
+                choices: departmentChoices,
+                when: ({ action }) => {
+                    if(action === 'View department budget'){
+                        return true; 
+                    } else {
+                        return false; 
+                    }
+                }
             },
             {
                 type: 'list',
@@ -47,6 +60,10 @@ const start = async function () {
             if (action === 'View all departments') {
                 const departmentTable = await db.getDepartments();
                 console.table(departmentTable);
+            }
+            if (action === 'View department budget') {
+                const departmentBudget = await db.getDepartmentBudget(data.departmentBudget);
+                console.table(departmentBudget);
             }
             if (action === 'View all roles') {
                 const rolesTable = await db.getRoles();
