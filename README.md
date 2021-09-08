@@ -1,5 +1,5 @@
 <h1>Employee Tracker</h1>
-  
+  <image src='https://img.shields.io/badge/license-MIT-green.svg' />
   <h2>Description</h2>
   
   The Employee Tracker is a command-line application (CLI) content-management system (CMS) that allows a user to manage a company's current employee database. The Employee Generator was created leveraging Node.js, Inquirer, and MySQL. The user is able to perform the following functions: VIEW -> All departments, All roles, All employees, Employees by Manager, Employees by Department, or the budget of a specific department; MODIFY -> ADD or DELETE departments, roles, and employees. CHANGE -> Employee's roles or managers. 
@@ -44,7 +44,7 @@
   
   <h2 id="license">License</h2>
 
-   - Find out more about this project's license(s) at: [https://choosealicense.com/licenses/](https://choosealicense.com/licenses/)
+   MIT - Find out more about this project's license(s) at: [https://choosealicense.com/licenses/](https://choosealicense.com/licenses/)
 
   <h2 id="contribution">Contribution</h2>
   <p>If you find any bugs, or think of any features that would be nice to add, please send an email to the address in the 'Questions' section.</p>
