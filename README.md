@@ -5,7 +5,9 @@
   The Employee Tracker is a command-line application (CLI) content-management system (CMS) that allows a user to manage a company's current employee database. The Employee Generator was created leveraging Node.js, Inquirer, and MySQL. The user is able to perform the following functions: VIEW -> All departments, All roles, All employees, Employees by Manager, Employees by Department, or the budget of a specific department; MODIFY -> ADD or DELETE departments, roles, and employees. CHANGE -> Employee's roles or managers. 
   
   <h2>Functionality</h2>
-  The Employee Tracker is a simple loop of Inquirer prompts that call methods on the db class based on the selected prompt. The 'db' constant which is a Database object. The Database object is a Class that contains various methods that make queries to the SQL database. These queries are SELECTs which will grab 'rows' that will then by displayed in the terminal via the 'console.table' command from the 'console.table' package, INSERTs that will add data to specific tables, DELETEs which will remove specific data from tables, UPDATEs that will update current rows in the tables, and some helper functions that retrieve primary id's from tables given another column's value (typically a name, or title). If these methods rely on another method, they are made asynchronous, so that the previous query completes prior to running another one. On the note of things being asynchronous, most of the data handling after an inquirer prompt is asynchronous with verification messages to ensure that the neccesarry query has completed before the user does anything else in the database. 
+  The Employee Tracker is a simple loop of Inquirer prompts that call methods on the db class based on the selected prompt. The 'db' constant which is a Database object. The Database object is a Class that contains various methods that make queries to the SQL database. These queries are SELECTs which will grab 'rows' that will then by displayed in the terminal via the 'console.table' command from the 'console.table' package, INSERTs that will add data to specific tables, DELETEs which will remove specific data from tables, UPDATEs that will update current rows in the tables, and some helper functions that retrieve primary id's from tables given another column's value (typically a name, or title). If these methods rely on another method, they are made asynchronous, so that the previous query completes prior to running another one. All of these methods can be found in the Database.js file in the lib directory. 
+  
+  On the note of things being asynchronous, most of the data handling after an inquirer prompt is asynchronous with verification messages to ensure that the neccesarry query has completed before the user does anything else in the database. 
 
   <h2>Table of Contents</h2>
  <ul>
@@ -62,7 +64,7 @@
   **FUN FACT:** The term "o'clock" is a contraction of the term "of the clock", which comes from 15th-century references to medieval mechanical clocks. During these times, sundials were also valid methods of timekeeping. So in order to clarify that something was using time from a clock, one would phrase it as "It is nine of the clock". Ultimately, this was abbreviated down to "nine o'clock". 
   
   The term “o’clock” is a contraction of the term “of the clock”. It comes from 15th-century references to medieval mechanical clocks. At the time, sundials were also common timekeepers. Therefore, to make clear one was referencing a clock’s time, they would say something like, “It is six of the clock” — which, over time, was shortened to “six o’clock”
-
-    _Live footage of me trying to launch a query from the inquirer prompt not using await_
+  
+  _Live footage of me trying to launch a query from the inquirer prompt not using await_
 
  ![Rocket hair launches man's head into the ceiling](https://github.com/AshisPatel/Employee-Tracker-CMS/blob/main/assets/gifs/rocket_chair.gif)
