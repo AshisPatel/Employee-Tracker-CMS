@@ -63,8 +63,6 @@
 
   **FUN FACT:** The term "o'clock" is a contraction of the term "of the clock", which comes from 15th-century references to medieval mechanical clocks. During these times, sundials were also valid methods of timekeeping. So in order to clarify that something was using time from a clock, one would phrase it as "It is nine of the clock". Ultimately, this was abbreviated down to "nine o'clock". 
   
-  The term “o’clock” is a contraction of the term “of the clock”. It comes from 15th-century references to medieval mechanical clocks. At the time, sundials were also common timekeepers. Therefore, to make clear one was referencing a clock’s time, they would say something like, “It is six of the clock” — which, over time, was shortened to “six o’clock”
-  
   _Live footage of me trying to launch a query from the inquirer prompt not using await_
 
  ![Rocket hair launches man's head into the ceiling](https://github.com/AshisPatel/Employee-Tracker-CMS/blob/main/assets/gifs/rocket_chair.gif)
